@@ -47,13 +47,32 @@ python run.py examples/chair.png --output-dir output/
 python gradio_app.py
 ```
 
-#### Anaconda 환경에서 실행
+---
+
+### 🐍 Anaconda 환경에서 실행하기
+
+> 💡 **Windows 사용자를 위한 빠른 시작 가이드**
+
+**1️⃣ Anaconda Prompt 실행**
+
+**2️⃣ 가상환경 활성화**
 ```sh
-# Anaconda Prompt에서 실행
 conda activate tripo_conda
+```
+
+**3️⃣ 프로젝트 폴더로 이동**
+```sh
 cd C:\Users\SSPLUS\Documents\TripoSR
+```
+
+**4️⃣ Gradio 앱 실행**
+```sh
 python gradio_app.py
 ```
+
+✅ 실행 후 브라우저에서 `http://localhost:7860` 으로 접속하세요!
+
+---
 
 ## 문제 해결
 > AttributeError: module 'torchmcubes_module' has no attribute 'mcubes_cuda'
