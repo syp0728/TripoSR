@@ -3,7 +3,14 @@ from typing import Callable, Optional, Tuple
 import numpy as np
 import torch
 import torch.nn as nn
-from torchmcubes import marching_cubes
+# from torchmcubes import marching_cubes
+
+# 6번째 줄 근처 (기존 주석 처리한 곳 아래에 추가)
+try:
+    from torchmcubes import marching_cubes
+except ImportError:
+    # torchmcubes가 없을 때 대신 사용할 함수를 정의합니다.
+    from skimage.measure import marching_cubes
 
 
 class IsosurfaceHelper(nn.Module):
@@ -43,7 +50,13 @@ class MarchingCubeHelper(IsosurfaceHelper):
     ) -> Tuple[torch.FloatTensor, torch.LongTensor]:
         level = -level.view(self.resolution, self.resolution, self.resolution)
         try:
-            v_pos, t_pos_idx = self.mc_func(level.detach(), 0.0)
+            # v_pos, t_pos_idx = self.mc_func(level.detach(), 0.0)
+            # 데이터를 넘파이 배열로 변환하여 전달합니다.
+            v_pos, t_pos_idx, normals, values = self.mc_func(level.detach().cpu().numpy(), 0.0)
+            # 결과값 중 필요한 정점(v_pos)과 면(t_pos_idx) 정보를 다시 텐서로 바꿉니다.
+            import torch
+            v_pos = torch.from_numpy(v_pos.copy()).to(level.device)
+            t_pos_idx = torch.from_numpy(t_pos_idx.copy()).long().to(level.device)
         except AttributeError:
             print("torchmcubes was not compiled with CUDA support, use CPU version instead.")
             v_pos, t_pos_idx = self.mc_func(level.detach().cpu(), 0.0)
